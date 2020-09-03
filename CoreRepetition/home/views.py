@@ -3,16 +3,16 @@ from django.http import HttpResponse
 
 
 def home(request):
-    return HttpResponse('<h1>Home page</h1>')
+    return render(request, 'home/home.html')
 
 
 def contact(request):
-    return HttpResponse('<h1>Contact page</h1>')
+    return render(request, 'home/contact.html')
 
 
 def courses(request):
-    return HttpResponse('<h1>Our courses</h1>')
+    return render(request, 'home/courses.html')
 
 
 def teachers(request):
-    return HttpResponse('<h1>Meet our crew!</h1>')
+    return render(request, 'home/teachers.html')

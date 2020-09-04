@@ -1,6 +1,17 @@
 {% extends 'panel/base.html' %}
 
-{% block body %}
-<h1>User Panel</h1>
-<a href="/panel/courses">Your courses</a>
-{% endblock body %}
+{% block content %}
+<legend>Your notes:</legend>
+{% for note in notes %}
+  <article class="media content-section">
+    <div class="media-body">
+      <div class="article-metadata">
+        <a class="mr-2" href="#">{{ note.author }}</a>
+        <small class="text-muted">{{ note.date_posted }}</small>
+      </div>
+      <h2><a class="article-title" href="#">{{ note.title }}</a></h2>
+      <p class="article-content">{{ note.content }}</p>
+    </div>
+  </article>
+{% endfor %}
+{% endblock content %}

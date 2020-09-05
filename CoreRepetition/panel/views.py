@@ -26,3 +26,7 @@ def panel_main(request):
 
 def panel_courses(request):
     return render(request, 'panel/courses.html')
+
+
+def panel_assignments(request):
+    return render(request, 'panel/assignments.html')

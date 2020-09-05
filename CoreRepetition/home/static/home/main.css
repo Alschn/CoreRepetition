@@ -6,3 +6,7 @@
     margin: 0;
     font-family: 'Kumbh Sans', sans-serif;
 }
+
+.header {
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.05);
+}

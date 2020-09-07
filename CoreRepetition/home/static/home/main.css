@@ -10,3 +10,12 @@
 .header {
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.05);
 }
+
+.content-section {
+    margin-top: 20px;
+    background: #ffffff;
+    padding: 10px 20px;
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+    margin-bottom: 20px;
+}

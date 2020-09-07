@@ -13,39 +13,39 @@
     <header class="header">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
-            <a class="navbar-brand" href="/">CoreRepetition</a>
+            <a class="navbar-brand" href="{% url 'home-page' %}">CoreRepetition</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav ml-auto mr-auto">
-                <li class="nav-item active">
-                <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="/contact">Contact</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="/teachers">Our teachers</a>
-                </li>
                 <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Our courses
-                </a>
-            
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="/courses">English</a>
-                    <a class="dropdown-item" href="/courses">German</a>
-                    <a class="dropdown-item" href="/courses">Maths</a>
-                </div>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Our courses
+                    </a>
+                
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="{% url 'courses' %}">English</a>
+                        <a class="dropdown-item" href="{% url 'courses' %}">German</a>
+                        <a class="dropdown-item" href="{% url 'courses' %}">Maths</a>
+                    </div>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'teachers' %}">Our teachers</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                </li>
+
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="/panel">Login</a>
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/panel">Register</a>
+                    <a class="nav-link" href="{% url 'register' %}">Register</a>
                 </li>
             </ul>
             </div>

@@ -15,6 +15,9 @@ class Note(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 #     comments = models.ManyToManyField(Comment)
 
+    def __str__(self):
+        return self.title
+
 
 # class Course(models.Model):
 #     name = models.CharField(max_length=100)

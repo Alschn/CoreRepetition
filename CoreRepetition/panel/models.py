@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 
 # class Comment(models.Model):
@@ -17,6 +18,9 @@ class Note(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('panel-note-detail', kwargs={'pk': self.pk})
 
 
 # class Course(models.Model):

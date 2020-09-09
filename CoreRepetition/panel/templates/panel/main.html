@@ -9,7 +9,7 @@
         <a class="mr-2" href="#">{{ note.author }}</a>
         <small class="text-muted">{{ note.date_posted|date:"d F, Y" }}</small>
       </div>
-      <h2><a class="article-title" href="#">{{ note.title }}</a></h2>
+      <h2><a class="article-title" href="{% url 'panel-note-detail' note.id %}">{{ note.title }}</a></h2>
       <p class="article-content">{{ note.content }}</p>
     </div>
   </article>

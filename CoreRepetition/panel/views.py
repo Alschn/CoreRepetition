@@ -1,16 +1,72 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.contrib import messages
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView
+)
 from .models import Note
 from CoreRepetition.users.forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 
 
-@login_required
-def panel_main(request):
-    context = {
-        'notes': Note.objects.all(),
-    }
-    return render(request, 'panel/main.html', context)
+# @login_required
+# def panel_main(request):
+#     context = {
+#         'notes': Note.objects.all(),
+#     }
+#     return render(request, 'panel/main.html', context)
+
+
+class NoteListView(LoginRequiredMixin, ListView):
+    model = Note
+    template_name = 'panel/main.html'
+    context_object_name = 'notes'
+    ordering = ['-date_posted']
+
+
+class NoteDetailView(LoginRequiredMixin, DetailView):
+    model = Note
+
+
+class NoteCreateView(LoginRequiredMixin, CreateView):
+    model = Note
+    fields = ['title', 'content']
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+
+class NoteUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Note
+    fields = ['title', 'content']
+    success_url = '/panel'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        note = self.get_object()
+        if self.request.user == note.author:
+            return True
+        return False
+
+
+class NoteDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Note
+    success_url = '/panel'
+
+    def test_func(self):
+        note = self.get_object()
+        if self.request.user == note.author:
+            return True
+        return False
 
 
 @login_required

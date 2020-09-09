@@ -21,22 +21,22 @@
         <!-- Sidebar  -->
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3>CodeRepetition</h3>
+                <a href="{% url 'home-page' %}"> <h3>CodeRepetition</h3> </a>
             </div>
 
             <ul class="list-unstyled components">
-                <p>Hi, $USERNAME</p>
+                <p>Hi, {{ user.username }}</p>
                 <li class="active">
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
                         <li>
-                            <a href="#">Link 1</a>
+                            <a href="{% url 'home-page' %}">Link 1</a>
                         </li>
                         <li>
-                            <a href="#">Link 2</a>
+                            <a href="{% url 'home-page' %}">Link 2</a>
                         </li>
                         <li>
-                            <a href="#">Link 3</a>
+                            <a href="{% url 'home-page' %}">Link 3</a>
                         </li>
                     </ul>
                 </li>
@@ -46,11 +46,11 @@
                     <ul class="collapse list-unstyled" id="pageSubmenu">
                         <!-- for course in current_user.courses: -->
                         <li>
-                            <a href="/panel/courses">Course 1</a>
+                            <a href="{% url 'panel-courses' %}">Course 1</a>
                         </li>
 
                         <li>
-                            <a href="/panel/courses">Course 2</a>
+                            <a href="{% url 'panel-courses' %}">Course 2</a>
                         </li>
                     </ul>
                 </li>
@@ -79,16 +79,20 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="nav navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Assignments</a>
+                            <a class="nav-link" href="{% url 'panel-main' %}">Home</a>
+                        </li>
+
+                        {% block additional_navlink %}
+                        {% endblock additional_navlink %}
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'panel-assignments' %}">Assignments</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">My notes</a>
+                            <a class="nav-link" href="{% url 'panel-profile' %}">Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Logout</a>
+                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -96,6 +100,14 @@
         </nav>
 
         <!-- CONTENT (NOTES, ANNOUNCEMENTS, ETC.) -->
+        {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+        {% endif %}
+
         {% block content %}
         {% endblock %}
     </div>

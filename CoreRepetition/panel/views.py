@@ -27,6 +27,7 @@ class NoteListView(LoginRequiredMixin, ListView):
     template_name = 'panel/main.html'
     context_object_name = 'notes'
     ordering = ['-date_posted']
+    paginate_by = 3
 
 
 class NoteDetailView(LoginRequiredMixin, DetailView):
@@ -72,6 +73,11 @@ class NoteDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 @login_required
 def panel_courses(request):
     return render(request, 'panel/courses.html')
+
+
+@login_required
+def panel_course(request):
+    return render(request, 'panel/course.html')
 
 
 @login_required

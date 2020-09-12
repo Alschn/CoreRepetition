@@ -16,6 +16,18 @@
                 <legend class="border-bottom mb-4">Profile Info</legend>
                 {{ u_form|crispy }}
                 {{ p_form|crispy }}
+
+                <!-- Temporary field to display user's friends -->
+                <legend class="border-bottom mb-2">Friends ({{ user.profile.get_friends_count}}):</legend>
+                {% for friend in user.profile.get_friends %}
+                    <h6>{{ friend }}</h6>
+                {% endfor %}
+
+                <!-- Temporary field to display user's courses -->
+                <legend class="border-bottom mb-2">Courses: ({{ user.profile.get_courses_count}}):</legend>
+                {% for course in user.profile.get_courses %}
+                    <a href="{% url 'panel-course' course.id %}"><h6>{{ course.name }}</h6></a>
+                {% endfor %}
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Update</button>

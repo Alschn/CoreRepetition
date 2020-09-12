@@ -33,7 +33,7 @@ class Note(models.Model):
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, blank=True, null=True)
 
     def __str__(self):
-        return self.title
+        return f"{self.title} by {self.author}"
 
     def get_likes_count(self):
         return self.liked.all().count()

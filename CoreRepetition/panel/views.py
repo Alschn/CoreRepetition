@@ -12,15 +12,20 @@ from django.views.generic import (
     DeleteView
 )
 from .models import Note, Course
-from CoreRepetition.users.forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+from CoreRepetition.users.forms import UserRegisterForm, ProfileUpdateForm
 
 
 class NoteListView(LoginRequiredMixin, ListView):
     model = Note
     template_name = 'panel/main.html'
     context_object_name = 'notes'
-    ordering = ['-date_posted']
-    paginate_by = 3
+    notes_count = 3
+
+    def get_queryset(self):
+        """Displays n last notes created by the current user"""
+        qs = self.model.objects.all().filter(author=self.request.user)\
+            .order_by('-date_posted')[:self.notes_count]
+        return qs
 
 
 class NoteDetailView(LoginRequiredMixin, DetailView):
@@ -63,15 +68,24 @@ class NoteDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
-class CourseDetailView(LoginRequiredMixin, DetailView):
+class CourseDetailView(LoginRequiredMixin, ListView):
     """"View: panel_course"""
-    model = Course
+    model = Note
     template_name = 'panel/course.html'
+    context_object_name = 'notes'
+    paginate_by = 5
+
+    def get_queryset(self):
+        """SELECT note WHERE note.course IN course"""
+        qs = self.model.objects.all().filter(
+            course__in=self.request.user.profile.get_courses()).order_by('-date_posted')
+        return qs
 
     # additional context
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['notes'] = Note.objects.all().order_by('-date_posted')
+        # stopgap XD
+        context['course'] = list(self.get_queryset())[0].course
         return context
 
 
@@ -88,19 +102,15 @@ def panel_assignments(request):
 @login_required
 def panel_profile(request):
     if request.method == 'POST':
-        u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
-        if u_form.is_valid() and p_form.is_valid():
-            u_form.save()
+        if p_form.is_valid():
             p_form.save()
             messages.success(request, "Your account has been updated!")
             return redirect('panel-profile')
     else:
-        u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
 
     context = {
-        'u_form': u_form,
         'p_form': p_form,
     }
 

@@ -8,7 +8,13 @@
 
   <legend>Your courses:</legend>
   <article class="media content-section">
+    {% if user.profile.courses %}
+      {% for course in user.profile.courses.all %}
+        <h6 class="article-title">{{ course }}</h6>
+      {% endfor %}
+    {% else %}
       <h6 class="article-title">You do not attend any courses yet :(</h6>
+    {% endif %}
   </article>
 
   <legend>Your latest notes:</legend>

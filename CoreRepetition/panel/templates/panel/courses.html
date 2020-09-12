@@ -8,4 +8,13 @@
 
 {% block content %}
 <h3>Attended courses:</h3>
+{% for course in user.profile.courses.all %}
+    <article class="media content-section">
+    <div class="media-body">
+        <a href="{% url 'panel-course' course.id %}"><h2>{{ course.name }}</h2></a>
+    </div>
+    </article>
+{% endfor %}
+
+<h3>Available courses:</h3>
 {% endblock content %}

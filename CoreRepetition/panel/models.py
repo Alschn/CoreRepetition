@@ -14,6 +14,9 @@ class Course(models.Model):
     def __str__(self):
         return f"Course: {self.name}"
 
+    def get_absolute_url(self):
+        return reverse('panel-course', kwargs={'pk': self.pk})
+
 
 class Note(models.Model):
     title = models.CharField(max_length=100)
@@ -26,7 +29,7 @@ class Note(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     liked = models.ManyToManyField(User, blank=True, related_name='likes')
-    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, blank=True)
+    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, blank=True, null=True)
 
     def __str__(self):
         return self.title

@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib import messages
+from django.urls import reverse
 from django.views.generic import (
     ListView,
     DetailView,
@@ -10,7 +11,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
-from .models import Note
+from .models import Note, Course
 from CoreRepetition.users.forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 
 
@@ -70,14 +71,15 @@ class NoteDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
+class CourseDetailView(LoginRequiredMixin, DetailView):
+    # panel_course
+    model = Course
+    template_name = 'panel/course.html'
+
+
 @login_required
 def panel_courses(request):
     return render(request, 'panel/courses.html')
-
-
-@login_required
-def panel_course(request):
-    return render(request, 'panel/course.html')
 
 
 @login_required

@@ -5,6 +5,16 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 
 
+class Course(models.Model):
+    name = models.CharField(max_length=300)
+#     leader = models.ForeignKey(User, on_delete=models.CASCADE)
+#     students = models.ManyToManyField(User)
+#     notes = models.ManyToManyField(Note)
+
+    def __str__(self):
+        return f"Course: {self.name}"
+
+
 class Note(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
@@ -15,7 +25,8 @@ class Note(models.Model):
     date_posted = models.DateTimeField(default=timezone.now)
     date_updated = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
-    liked = models.ManyToManyField(User, default=None, related_name='likes')
+    liked = models.ManyToManyField(User, blank=True, related_name='likes')
+    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, blank=True)
 
     def __str__(self):
         return self.title
@@ -54,8 +65,4 @@ class Like(models.Model):
         return f"{self.user}-{self.post}-{self.value}"
 
 
-# class Course(models.Model):
-#     name = models.CharField(max_length=100)
-#     leader = models.ForeignKey(User, on_delete=models.CASCADE)
-#     students = models.ManyToManyField(User)
-#     notes = models.ManyToManyField(Note)
+

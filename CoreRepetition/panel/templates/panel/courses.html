@@ -11,7 +11,7 @@
 {% for course in user.profile.courses.all %}
     <article class="media content-section">
     <div class="media-body">
-        <a href="{% url 'panel-course' course.id %}"><h2>{{ course.name }}</h2></a>
+        <a href="{% url 'panel-course' course.id %}"><h5>{{ course.name }}</h5></a>
     </div>
     </article>
 {% endfor %}

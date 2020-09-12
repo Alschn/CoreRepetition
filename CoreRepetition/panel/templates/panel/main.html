@@ -10,7 +10,7 @@
   <article class="media content-section">
     {% if user.profile.courses %}
       {% for course in user.profile.courses.all %}
-        <h6 class="article-title">{{ course }}</h6>
+        <a href="{% url 'panel-course' course.id %}"><h6 class="article-title">{{ course }}</h6></a>
       {% endfor %}
     {% else %}
       <h6 class="article-title">You do not attend any courses yet :(</h6>

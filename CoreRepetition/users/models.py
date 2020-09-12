@@ -19,7 +19,7 @@ class Profile(models.Model):
     courses = models.ManyToManyField(Course, blank=True, null=True, related_name='courses')
 
     def __str__(self):
-        return f"{self.user.username} Profile - {self.created}"
+        return f"{self.user.username} Profile - {self.created.strftime('%d/%m/%Y-%H:%M')}"
 
     def save(self, *args, **kwargs):
         exists = False
@@ -39,3 +39,16 @@ class Profile(models.Model):
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.image.path)
+
+STATUS_CHOICES = (
+    ('send', 'send'),
+    ('accepted', 'accepted')
+)
+
+class Relationship(models.Model):
+    sender = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='sender')
+    receiver = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='receiver')
+    status = models.CharField(max_length=8, choices=STATUS_CHOICES)
+
+    def __str__(self):
+        return f"{self.sender}-{self.receiver}-{self.status}"

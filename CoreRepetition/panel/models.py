@@ -17,6 +17,7 @@ class Course(models.Model):
     def get_absolute_url(self):
         return reverse('panel-course', kwargs={'pk': self.pk})
 
+from CoreRepetition.users.models import Profile
 
 class Note(models.Model):
     title = models.CharField(max_length=100)
@@ -66,6 +67,3 @@ class Like(models.Model):
 
     def __str__(self):
         return f"{self.user}-{self.post}-{self.value}"
-
-
-

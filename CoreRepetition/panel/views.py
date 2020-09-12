@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib import messages
+from django.urls import reverse
 from django.views.generic import (
     ListView,
     DetailView,
@@ -10,16 +11,8 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
-from .models import Note
+from .models import Note, Course
 from CoreRepetition.users.forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
-
-
-# @login_required
-# def panel_main(request):
-#     context = {
-#         'notes': Note.objects.all(),
-#     }
-#     return render(request, 'panel/main.html', context)
 
 
 class NoteListView(LoginRequiredMixin, ListView):
@@ -36,7 +29,7 @@ class NoteDetailView(LoginRequiredMixin, DetailView):
 
 class NoteCreateView(LoginRequiredMixin, CreateView):
     model = Note
-    fields = ['title', 'content']
+    fields = ['course', 'title', 'content', 'image']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -45,7 +38,7 @@ class NoteCreateView(LoginRequiredMixin, CreateView):
 
 class NoteUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Note
-    fields = ['title', 'content']
+    fields = ['course', 'title', 'content', 'image']
     success_url = '/panel'
 
     def form_valid(self, form):
@@ -70,14 +63,21 @@ class NoteDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
+class CourseDetailView(LoginRequiredMixin, DetailView):
+    """"View: panel_course"""
+    model = Course
+    template_name = 'panel/course.html'
+
+    # additional context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['notes'] = Note.objects.all().order_by('-date_posted')
+        return context
+
+
 @login_required
 def panel_courses(request):
     return render(request, 'panel/courses.html')
-
-
-@login_required
-def panel_course(request):
-    return render(request, 'panel/course.html')
 
 
 @login_required

@@ -5,12 +5,18 @@ Language school website built with Django framework
 
 git clone https://github.com/Alschn/CoreRepetition.git  
 
-cd REPO_PATH/CoreRepetition  
+    cd REPO_PATH/CoreRepetition  
 
-py -3 -m venv venv  
+    py -3 -m venv venv  
 
-venv\Scripts\activate  
+    venv\Scripts\activate  
 
-pip install -r requirements.txt  
+    pip install -r requirements.txt  
 
-python manage.py runserver  
+    python manage.py makemigrations  
+
+    python manage.py migrate  
+
+    python manage.py createsuperuser  
+
+    python manage.py runserver  

@@ -1,20 +1,41 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.template.defaultfilters import slugify
 from PIL import Image
+from CoreRepetition.panel.models import Course
+from .utils import get_random_code
 
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')
 
+    first_name = models.CharField(max_length=200, blank=True)
+    last_name = models.CharField(max_length=200, blank=True)
+    friends = models.ManyToManyField(User, blank=True, related_name='friends')
+    slug = models.SlugField(unique=True, blank=True)
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    courses = models.ManyToManyField(Course, blank=True, null=True, related_name='courses')
+
     def __str__(self):
-        return f"{self.user.username} Profile"
+        return f"{self.user.username} Profile - {self.created}"
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+        exists = False
+        if self.first_name and self.last_name:
+            to_slug = slugify(str(self.first_name) + " " + str(self.last_name))
+            exists = Profile.objects.filter(slug=to_slug).exists()
+            while exists:
+                to_slug = slugify(to_slug + " " + str(get_random_code()))
+                exists = Profile.objects.filter(slug=to_slug).exists()
+        else:
+            to_slug = str(self.user)
+        self.slug = to_slug
 
+        super().save(*args, **kwargs)
         img = Image.open(self.image.path)
         if img.height > 300 or img.width > 300:
             output_size = (300, 300)
             img.thumbnail(output_size)
-            img.save()
+            img.save(self.image.path)

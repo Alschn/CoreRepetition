@@ -30,13 +30,13 @@
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
                         <li>
-                            <a href="{% url 'home-page' %}">Link 1</a>
+                            <a href="{% url 'home-page' %}">Home</a>
                         </li>
                         <li>
-                            <a href="{% url 'home-page' %}">Link 2</a>
+                            <a href="{% url 'courses' %}">Our offer</a>
                         </li>
                         <li>
-                            <a href="{% url 'home-page' %}">Link 3</a>
+                            <a href="{% url 'contact' %}">Contact</a>
                         </li>
                     </ul>
                 </li>
@@ -44,18 +44,15 @@
                 <li>
                     <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Your courses</a>
                     <ul class="collapse list-unstyled" id="pageSubmenu">
-                        <!-- for course in current_user.courses: -->
+                        {% for course in user.profile.courses.all %}
                         <li>
-                            <a href="{% url 'panel-courses' %}">Course 1</a>
+                            <a href="{% url 'panel-course' course.id %}">{{ course.name }}</a>
                         </li>
-
-                        <li>
-                            <a href="{% url 'panel-courses' %}">Course 2</a>
-                        </li>
+                        {% endfor %}
                     </ul>
                 </li>
                 <li>
-                    <a href="#">Portfolio</a>
+                    <a href="{% url 'panel-courses' %}">All courses</a>
                 </li>
                 <li>
                     <a href="#">Help</a>

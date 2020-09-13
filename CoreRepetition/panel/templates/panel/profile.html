@@ -24,10 +24,13 @@
                 {% endfor %}
 
                 <!-- Temporary field to display user's courses -->
-                <legend class="border-bottom mb-2">Courses: ({{ user.profile.get_courses_count}}):</legend>
+                <legend class="border-bottom mb-2">Courses ({{ user.profile.get_courses_count}}):</legend>
                 {% for course in user.profile.get_courses %}
                     <a href="{% url 'panel-course' course.id %}"><h6>{{ course.name }}</h6></a>
                 {% endfor %}
+
+                <legend class="border-bottom mb-2">Other statistics</legend>
+                <h6>Created notes: {{ user.profile.get_notes_count }}</h6>
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Update</button>

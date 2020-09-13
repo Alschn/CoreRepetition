@@ -33,6 +33,13 @@ class Profile(models.Model):
     def get_courses_count(self):
         return self.courses.all().count()
 
+    def get_notes(self):
+        return self.user.notes.all()
+
+    def get_notes_count(self):
+        # related name = notes
+        return self.user.notes.all().count()
+
     def save(self, *args, **kwargs):
         exists = False
         if self.first_name and self.last_name:

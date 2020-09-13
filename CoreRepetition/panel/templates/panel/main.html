@@ -29,6 +29,7 @@
         </div>
         <h2><a class="article-title" href="{% url 'panel-note-detail' note.id %}">{{ note.title }}</a></h2>
         <p class="article-content">{{ note.content }}</p>
+        <h6>Likes: {{ note.get_likes_count }}</h6>
       </div>
     </article>
 {% endfor %}

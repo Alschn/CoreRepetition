@@ -11,7 +11,9 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
-from .models import Note, Course
+from django.views.generic.edit import FormMixin
+from .models import Note, Course, Like
+from .forms import CommentModelForm
 from CoreRepetition.users.forms import UserRegisterForm, ProfileUpdateForm
 
 
@@ -68,12 +70,13 @@ class NoteDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
-class CourseDetailView(LoginRequiredMixin, ListView):
+class CourseDetailView(LoginRequiredMixin, FormMixin, ListView):
     """"View: panel_course"""
     model = Note
     template_name = 'panel/course.html'
     context_object_name = 'notes'
     paginate_by = 5
+    form_class = CommentModelForm
 
     def get_queryset(self):
         """SELECT note WHERE note.course IN course"""
@@ -84,10 +87,40 @@ class CourseDetailView(LoginRequiredMixin, ListView):
     # additional context
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # stopgap XD
-        context['course'] = list(self.get_queryset())[0].course
+        try:
+            context['course'] = list(self.get_queryset())[0].course
+        except IndexError:
+            pass
+
+        context['c_form'] = self.get_form()
         return context
 
+
+@login_required
+def like_unlike_note(request):
+    user = request.user
+    if request.method == 'POST':
+        note_id = request.POST.get('note_id')
+        note_obj = Note.objects.get(id=note_id)
+        course_pk = note_obj.course.id
+        if user in note_obj.liked.all():
+            note_obj.liked.remove(user)
+        else:
+            note_obj.liked.add(user)
+        
+        like, created = Like.objects.get_or_create(user=user, note_id=note_id)
+
+        if not created:
+            if like.value == "Like":
+                like.value = "Unlike"
+            else:
+                like.value = "Like"
+        else:
+            like.value = "Like"
+
+            note_obj.save()
+            like.save()
+    return redirect('panel-course', pk=course_pk)
 
 @login_required
 def panel_courses(request):

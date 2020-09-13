@@ -28,7 +28,7 @@ class Note(models.Model):
         blank=True)
     date_posted = models.DateTimeField(default=timezone.now)
     date_updated = models.DateTimeField(auto_now=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes')
     liked = models.ManyToManyField(User, blank=True, related_name='likes')
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, blank=True, null=True)
 
@@ -37,6 +37,13 @@ class Note(models.Model):
 
     def get_likes_count(self):
         return self.liked.all().count()
+
+    def get_comments(self):
+        return self.comment_set.all()
+
+    def get_comments_count(self):
+        # referencing Comment model
+        return self.comment_set.all().count()
 
     def get_absolute_url(self):
         return reverse('panel-note-detail', kwargs={'pk': self.pk})
@@ -66,4 +73,4 @@ class Like(models.Model):
     date_posted = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user}-{self.post}-{self.value}"
+        return f"{self.user}-{self.note}-{self.value}"

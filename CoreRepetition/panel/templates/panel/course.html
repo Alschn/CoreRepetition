@@ -1,4 +1,5 @@
 {% extends 'panel/base.html' %}
+{% load crispy_forms_tags %}
 
 {% block additional_navlink %}
 <li class="nav-item">
@@ -26,6 +27,36 @@
       </div>
       <h2><a class="article-title" href="{% url 'panel-note-detail' note.id %}">{{ note.title }}</a></h2>
       <p class="article-content">{{ note.content }}</p>
+      <form action="{% url 'panel-like-note-view' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="note_id" value="{{ note.id }}">
+        <button type="submit" class="btn btn-primary">
+            {% if user not in note.liked.all %}
+              <i>Like</i>
+            {% else %}
+              <i>Unlike</i>
+            {% endif %}
+        </button>
+        <span class="ml-2">{{ note.get_likes_count }}</span>
+      </form>
+
+      <!-- Comment section in a current note -->
+      {% for comment in note.get_comments %}
+      <div class="content-section mt-3 mb-0 pd-0">
+        {{comment.content}}, by {{comment.user}} on {{comment.date_posted}} inside {{comment.note}}
+      </div>
+      {% empty %}
+
+      {% endfor %}
+
+      <div class="content-section mt-3 mb-0">
+        <form action="" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="note_id" value="{{ note.id }}">
+          {{ c_form|crispy }}
+          <button class="btn btn-outline-primary btn-sm" type="submit" name="submit_comment">comment</button>
+        </form>
+      </div>
     </div>
   </article>
 {% endfor %}

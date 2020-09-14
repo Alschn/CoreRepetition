@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.urls import reverse
 from django.views.generic import (
@@ -11,20 +11,22 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
-from django.views.generic.edit import FormMixin
 from .models import Note, Course, Like
 from .forms import CommentModelForm
 from CoreRepetition.users.forms import UserRegisterForm, ProfileUpdateForm
 
 
 class NoteListView(LoginRequiredMixin, ListView):
+    """Note display in main panel page.\n
+    Displays notes by the current user from all of their courses.\n"""
+
     model = Note
     template_name = 'panel/main.html'
     context_object_name = 'notes'
     notes_count = 3
 
     def get_queryset(self):
-        """Displays n last notes created by the current user"""
+        """Displays n last notes created by the current user."""
         qs = self.model.objects.all().filter(author=self.request.user)\
             .order_by('-date_posted')[:self.notes_count]
         return qs
@@ -70,30 +72,46 @@ class NoteDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
-class CourseDetailView(LoginRequiredMixin, FormMixin, ListView):
-    """"View: panel_course"""
-    model = Note
-    template_name = 'panel/course.html'
-    context_object_name = 'notes'
-    paginate_by = 5
-    form_class = CommentModelForm
+@login_required
+def panel_course(request, pk):
+    """Displays notes related to the current course.\n
+    Notes can be edited, commented and liked."""
 
-    def get_queryset(self):
-        """SELECT note WHERE note.course IN course"""
-        qs = self.model.objects.all().filter(
-            course__in=self.request.user.profile.get_courses()).order_by('-date_posted')
-        return qs
+    # Get filtered query_set - only notes from the current course
+    notes_list = Note.objects.all().filter(
+        course__in=request.user.profile.get_courses()
+    ).order_by('-date_posted')
 
-    # additional context
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        try:
-            context['course'] = list(self.get_queryset())[0].course
-        except IndexError:
-            pass
+    # Notes pagination
+    paginate_by = 3
+    page = request.GET.get('page', 1)
+    paginator = Paginator(notes_list, paginate_by)
 
-        context['c_form'] = self.get_form()
-        return context
+    try:
+        notes = paginator.page(page)
+    except PageNotAnInteger:
+        notes = paginator.page(1)
+    except EmptyPage:
+        notes = paginator.page(paginator.num_pages)
+
+    # Comment form inside each note
+    c_form = CommentModelForm()
+    if 'submit_comment' in request.POST:
+        c_form = CommentModelForm(request.POST)
+        if c_form.is_valid():
+            instance = c_form.save(commit=False)
+            instance.user = request.user
+            instance.note = Note.objects.get(id=request.POST.get('note_id'))
+            instance.save()
+            c_form = CommentModelForm()
+            return redirect('panel-course', pk=pk)
+
+    context = {
+        'notes': notes,
+        'course': notes_list.first().course,
+        'c_form': c_form,
+    }
+    return render(request, 'panel/course.html', context)
 
 
 @login_required
@@ -107,7 +125,7 @@ def like_unlike_note(request):
             note_obj.liked.remove(user)
         else:
             note_obj.liked.add(user)
-        
+
         like, created = Like.objects.get_or_create(user=user, note_id=note_id)
 
         if not created:

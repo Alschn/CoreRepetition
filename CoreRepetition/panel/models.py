@@ -35,11 +35,14 @@ class Note(models.Model):
     def __str__(self):
         return f"{self.title} by {self.author}"
 
+    def get_current_course(self):
+        return self.course_set.first()
+
     def get_likes_count(self):
         return self.liked.all().count()
 
     def get_comments(self):
-        return self.comment_set.all()
+        return self.comment_set.all().order_by('-date_posted')
 
     def get_comments_count(self):
         # referencing Comment model

@@ -41,8 +41,9 @@
       </form>
 
       <!-- Comment section in a current note -->
+      <legend class="mb-0 pb-0 mt-4">Comments:</legend>
       {% for comment in note.get_comments %}
-      <div class="content-section mt-3 mb-0 pd-0">
+      <div class="content-section mt-3 mb-0 pd-0 pb-0 pt-0">
         {{comment.content}}, by {{comment.user}} on {{comment.date_posted}} inside {{comment.note}}
       </div>
       {% empty %}

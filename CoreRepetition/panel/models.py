@@ -60,7 +60,7 @@ class Comment(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.pk)
+        return f"{str(self.pk)} in {self.note.title} by {self.user}"
 
 
 LIKE_CHOICES = (

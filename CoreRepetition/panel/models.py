@@ -17,6 +17,7 @@ class Course(models.Model):
     def get_absolute_url(self):
         return reverse('panel-course', kwargs={'pk': self.pk})
 
+from CoreRepetition.users.models import Profile
 
 class Note(models.Model):
     title = models.CharField(max_length=100)
@@ -27,15 +28,25 @@ class Note(models.Model):
         blank=True)
     date_posted = models.DateTimeField(default=timezone.now)
     date_updated = models.DateTimeField(auto_now=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes')
     liked = models.ManyToManyField(User, blank=True, related_name='likes')
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, blank=True, null=True)
 
     def __str__(self):
-        return self.title
+        return f"{self.title} by {self.author}"
+
+    def get_current_course(self):
+        return self.course_set.first()
 
     def get_likes_count(self):
         return self.liked.all().count()
+
+    def get_comments(self):
+        return self.comment_set.all().order_by('-date_posted')
+
+    def get_comments_count(self):
+        # referencing Comment model
+        return self.comment_set.all().count()
 
     def get_absolute_url(self):
         return reverse('panel-note-detail', kwargs={'pk': self.pk})
@@ -49,7 +60,7 @@ class Comment(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.pk)
+        return f"{str(self.pk)} in {self.note.title} by {self.user}"
 
 
 LIKE_CHOICES = (
@@ -65,7 +76,4 @@ class Like(models.Model):
     date_posted = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user}-{self.post}-{self.value}"
-
-
-
+        return f"{self.user}-{self.note}-{self.value}"

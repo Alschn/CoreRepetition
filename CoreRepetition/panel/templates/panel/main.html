@@ -8,7 +8,7 @@
 
   <legend>Your courses:</legend>
   <article class="media content-section">
-    {% if user.profile.courses %}
+    {% if user.profile.get_courses %}
       {% for course in user.profile.courses.all %}
         <a href="{% url 'panel-course' course.id %}"><h6 class="article-title">{{ course }}</h6></a>
       {% endfor %}
@@ -17,41 +17,20 @@
     {% endif %}
   </article>
 
-  <legend>Your latest notes:</legend>
+  <legend>Your {{ notes|length }} latest notes:</legend>
   {% for note in notes %}
     <!-- Displays only notes that belong to current user -->
-    {% if note.author == user %} 
-      <article class="media content-section">
-        <div class="media-body">
-          <div class="article-metadata">
-            <a class="mr-2" href="#">{{ note.author }}</a>
-            <small class="text-muted">{{ note.date_posted|date:"d F, Y" }}</small>
-            <h6>{{ note.course }}</h6>
-          </div>
-          <h2><a class="article-title" href="{% url 'panel-note-detail' note.id %}">{{ note.title }}</a></h2>
-          <p class="article-content">{{ note.content }}</p>
+    <article class="media content-section">
+      <div class="media-body">
+        <div class="article-metadata">
+          <a class="mr-2" href="#">{{ note.author }}</a>
+          <small class="text-muted">{{ note.date_posted|date:"d F, Y  H:i" }}</small>
+          <h6>{{ note.course }}</h6>
         </div>
-      </article>
-    {% endif %}
-  {% endfor %}
-  {% if is_paginated %}
-    {% if page_obj.has_previous %}
-      <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-      <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-    {% endif %}
-
-    {% for num in page_obj.paginator.page_range %}
-      {% if page_obj.number == num %}
-        <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
-      {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-        <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
-      {% endif %}
-    {% endfor %}
-
-    {% if page_obj.has_next %}
-      <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
-      <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-    {% endif %}
-
-  {% endif %}
+        <h2><a class="article-title" href="{% url 'panel-note-detail' note.id %}">{{ note.title }}</a></h2>
+        <p class="article-content">{{ note.content }}</p>
+        <h6>Likes: {{ note.get_likes_count }}</h6>
+      </div>
+    </article>
+{% endfor %}
 {% endblock content %}

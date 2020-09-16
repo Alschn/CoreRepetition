@@ -41,21 +41,27 @@
       </form>
 
       <!-- Comment section in a current note -->
-      <legend class="mb-0 pb-0 mt-4">Comments:</legend>
-      {% for comment in note.get_comments %}
-      <div class="content-section mt-3 mb-0 pd-0 pb-0 pt-0">
-        {{comment.content}}, by {{comment.user}} on {{comment.date_posted}} inside {{comment.note}}
-      </div>
-      {% empty %}
+      <button class="btn btn-info mt-3 mb-0">Show / Hide comments</button>
+      <div class="comment-block" id="{{forloop.counter0}}">
+        {% if note.comment_set.all %}
+        <legend class="mb-0 pb-0 mt-2">Comments:</legend>
+        {% endif %}
 
-      {% endfor %}
+        {% for comment in note.get_comments %}
+          <div class="content-section mt-3 mb-0 pd-0 pb-0 pt-0">
+            {{comment.content}}, by {{comment.user}} on {{comment.date_posted}} inside {{comment.note}}
+          </div>
+        {% empty %}
+
+        {% endfor %}
+      </div>
 
       <div class="content-section mt-3 mb-0">
         <form action="" method="POST">
           {% csrf_token %}
           <input type="hidden" name="note_id" value="{{ note.id }}">
           {{ c_form|crispy }}
-          <button class="btn btn-outline-primary btn-sm" type="submit" name="submit_comment">comment</button>
+          <button class="btn btn-outline-primary btn-sm" type="submit" name="submit_comment">Comment</button>
         </form>
       </div>
     </div>

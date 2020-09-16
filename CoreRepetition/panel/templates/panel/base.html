@@ -42,7 +42,9 @@
                 </li>
 
                 <li>
+                    {% if user.profile.courses.all %}
                     <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Your courses</a>
+                    {% endif %}
                     <ul class="collapse list-unstyled" id="pageSubmenu">
                         {% for course in user.profile.courses.all %}
                         <li>
@@ -50,10 +52,20 @@
                         </li>
                         {% endfor %}
                     </ul>
+                    
                 </li>
                 <li>
                     <a href="{% url 'panel-courses' %}">All courses</a>
                 </li>
+
+                <li>
+                    <a href="{% url 'panel-profiles' %}">Profiles</a>
+                </li>
+
+                <li>
+                    <a href="{% url 'panel-received-invites' %}">Friends ({{ user.profile.get_friends_count }})</a>
+                </li>
+
                 <li>
                     <a href="#">Help</a>
                 </li>

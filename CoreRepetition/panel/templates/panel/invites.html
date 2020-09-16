@@ -1,0 +1,35 @@
+{% extends 'panel/base.html' %}
+
+{% block content %}
+    <div class="content-section">
+        <h3>My invites:</h3>
+        {% if not invites %}
+            You have no invite requests pending.
+        {% else %}
+
+        {% for invite in invites %}
+           <h3>{{invite.user}}</h3>
+            <a href=""><button class="btn btn-primary">See profile</button></a>
+
+            <form action="{% url 'panel-accept-invite' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="profile_pk" value={{invite.pk}}>
+                <button type="submit" class="btn btn-outline-primary mt-2">
+                    <i class="check icon"></i>
+                    Accept invite
+                </button>
+            </form>
+                <form action="{% url 'panel-reject-invite' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="profile_pk" value={{invite.pk}}>
+                <button type="submit" class="btn btn-outline-danger mt-2">
+                    <i class="close icon"></i>
+                    Reject invite
+                </button>
+            </form>
+        {% endfor %}
+
+
+        {% endif %}
+    </div>
+{% endblock content %}

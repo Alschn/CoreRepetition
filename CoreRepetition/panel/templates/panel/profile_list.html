@@ -1,0 +1,42 @@
+{% extends 'panel/base.html' %}
+
+{% block content %}
+    <div class="content-section">
+        All profiles
+
+        {% if not profiles %}
+            There are no profiles in the database except yours :(
+
+        {% else %}
+            <div class="row">
+            {% for profile in profiles %}
+                <div class="col">
+                    <h4>{{profile.user}}</h4>
+                    <a href={{profile.get_absolute_url}}><button class="btn btn-primary">See profile</button></a>
+                    <br>
+
+                    {% if profile.user not in rel_receiver and profile.user not in rel_sender %}
+                        <form action="{% url 'panel-send-invite' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="profile_pk" value={{profile.pk}}>
+                            <button type="submit" class="btn btn-success mt-2"><i class=""></i>Add to friends</button>
+                        </form>
+                        {% endif %}
+
+                    {% if profile.user in rel_receiver and request.user not in profile.friends.all %}
+                        <button class="btn btn-info mt-2" disabled><i class=""></i>Waiting for approval</button>
+                    {% endif %}
+
+                    {% if request.user in profile.friends.all %}
+                        <form action="{% url 'panel-remove-friend' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="profile_pk" value={{profile.pk}}>
+                            <button type="submit" class="btn btn-danger mt-2"><i class=""></i>Remove from friends</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}

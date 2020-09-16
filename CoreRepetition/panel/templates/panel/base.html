@@ -57,6 +57,15 @@
                 <li>
                     <a href="{% url 'panel-courses' %}">All courses</a>
                 </li>
+
+                <li>
+                    <a href="{% url 'panel-profiles' %}">Profiles</a>
+                </li>
+
+                <li>
+                    <a href="{% url 'panel-received-invites' %}">Friends ({{ user.profile.get_friends_count }})</a>
+                </li>
+
                 <li>
                     <a href="#">Help</a>
                 </li>

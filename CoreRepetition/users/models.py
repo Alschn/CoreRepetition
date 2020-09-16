@@ -3,7 +3,31 @@ from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from PIL import Image
 from CoreRepetition.panel.models import Course
+from django.db.models import Q
 from .utils import get_random_code
+
+
+class ProfileManager(models.Manager):
+
+    def get_all_profiles_to_invite(self, sender):
+        """Gets all the profiles that can be invited by us."""
+        profiles = Profile.objects.all().exclude(user=sender)
+        profile = Profile.objects.get(user=sender)
+        qs = Relationship.objects.filter(Q(sender=profile) | Q(receiver=profile))
+
+        accepted = []
+        for relationship in qs:
+            if relationship.status == 'accepted':
+                accepted.append(relationship.receiver)
+                accepted.append(relationship.sender)
+
+        # All the profiles which are not in accepted list
+        available = [profile for profile in profiles if profile not in accepted]
+        return available
+
+    def get_all_profiles_except(self, excluded):
+        profiles = Profile.objects.all().exclude(user=excluded)
+        return profiles
 
 
 class Profile(models.Model):
@@ -17,6 +41,8 @@ class Profile(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     courses = models.ManyToManyField(Course, blank=True, null=True, related_name='courses')
+
+    objects = ProfileManager()
 
     def __str__(self):
         return f"{self.user.username} Profile - {self.created.strftime('%d/%m/%Y-%H:%M')}"
@@ -64,10 +90,19 @@ STATUS_CHOICES = (
     ('accepted', 'accepted')
 )
 
+
+class RelationshipManager(models.Manager):
+    def invitations_received(self, receiver):
+        qs = Relationship.objects.filter(receiver=receiver, status='send')
+        return qs
+
+
 class Relationship(models.Model):
     sender = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='sender')
     receiver = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='receiver')
     status = models.CharField(max_length=8, choices=STATUS_CHOICES)
+
+    objects = RelationshipManager()
 
     def __str__(self):
         return f"{self.sender}-{self.receiver}-{self.status}"

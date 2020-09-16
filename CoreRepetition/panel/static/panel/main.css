@@ -167,8 +167,13 @@ a.article-title:hover {
     text-decoration: none;
 }
 
+.article-course {
+    color: #999;
+}
+
 .article-content {
     white-space: pre-line;
+    color: #444444 !important;
 }
 
 .article-img {

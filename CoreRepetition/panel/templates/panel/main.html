@@ -18,19 +18,23 @@
   </article>
 
   <legend>Your {{ notes|length }} latest notes:</legend>
+  <div class="row">
   {% for note in notes %}
     <!-- Displays only notes that belong to current user -->
-    <article class="media content-section">
-      <div class="media-body">
-        <div class="article-metadata">
-          <a class="mr-2" href="#">{{ note.author }}</a>
-          <small class="text-muted">{{ note.date_posted|date:"d F, Y  H:i" }}</small>
-          <h6>{{ note.course }}</h6>
+    <div class="col">
+      <article class="media content-section">
+        <div class="media-body">
+          <div class="article-metadata">
+            <a class="mr-2" href="#">{{ note.author }}</a>
+            <small class="text-muted">{{ note.date_posted|date:"d F, Y  H:i" }}</small>
+            <h6 class="article-course">{{ note.course }}</h6>
+          </div>
+          <h4><a class="article-title" href="{% url 'panel-note-detail' note.id %}">{{ note.title }}</a></h4>
+          <p class="article-content">{{ note.content }}</p>
+          <h6>Likes: {{ note.get_likes_count }}</h6>
         </div>
-        <h2><a class="article-title" href="{% url 'panel-note-detail' note.id %}">{{ note.title }}</a></h2>
-        <p class="article-content">{{ note.content }}</p>
-        <h6>Likes: {{ note.get_likes_count }}</h6>
-      </div>
-    </article>
+      </article>
+    </div>
 {% endfor %}
+</div>
 {% endblock content %}

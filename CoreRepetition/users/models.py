@@ -86,14 +86,14 @@ class Profile(models.Model):
             img.save(self.image.path)
 
 STATUS_CHOICES = (
-    ('send', 'send'),
+    ('sent', 'sent'),
     ('accepted', 'accepted')
 )
 
 
 class RelationshipManager(models.Manager):
     def invitations_received(self, receiver):
-        qs = Relationship.objects.filter(receiver=receiver, status='send')
+        qs = Relationship.objects.filter(receiver=receiver, status='sent')
         return qs
 
 

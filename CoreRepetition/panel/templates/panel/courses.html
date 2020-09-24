@@ -17,4 +17,9 @@
 {% endfor %}
 
 <h3>Available courses:</h3>
+<div class="content-section">
+{% for course in all_courses %}
+    <a href="{% url 'panel-course' course.id %}"><p>{{ course.name }}</p></a>
+{% endfor %}
+</div>
 {% endblock content %}

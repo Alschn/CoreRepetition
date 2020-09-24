@@ -41,7 +41,7 @@
       </form>
 
       <!-- Comment section in a current note -->
-      <button class="btn btn-info mt-3 mb-0">Show / Hide comments</button>
+      <button class="btn btn-info mt-3 mb-0 btn-comments">Show / Hide comments</button>
       <div class="comment-block" id="{{forloop.counter0}}">
         {% if note.comment_set.all %}
         <legend class="mb-0 pb-0 mt-2">Comments:</legend>
@@ -88,3 +88,9 @@
   {% endif %}
 {% endif %}
 {% endblock content %}
+
+{% block additional_js %}
+{{ block.super }}
+{% load static %}
+<script src="{% static 'panel/course.js' %}"></script>
+{% endblock additional_js %}

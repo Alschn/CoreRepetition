@@ -146,7 +146,11 @@ def like_unlike_note(request):
 @login_required
 def panel_courses(request):
     """Viewing all the existing courses."""
-    return render(request, 'panel/courses.html')
+    courses = Course.objects.all()
+    context = {
+        'all_courses': courses,
+    }
+    return render(request, 'panel/courses.html', context)
 
 
 @login_required
@@ -250,7 +254,7 @@ def send_invitation(request):
         user = request.user
         sender = Profile.objects.get(user=user)
         receiver = Profile.objects.get(pk=pk)
-        relationship = Relationship.objects.create(sender=sender, receiver=receiver, status='send')
+        relationship = Relationship.objects.create(sender=sender, receiver=receiver, status='sent')
         # stay on the same page
         return redirect(request.META.get('HTTP_REFERER'))
     return redirect(request, 'panel-main')
@@ -283,7 +287,7 @@ def accept_invitation(request):
         receiver = Profile.objects.get(user=request.user)
         relationship = get_object_or_404(Relationship, sender=sender, receiver=receiver)
 
-        if relationship.status == "send":
+        if relationship.status == "sent":
             relationship.status = "accepted"
             relationship.save()
             return redirect(request.META.get('HTTP_REFERER'))

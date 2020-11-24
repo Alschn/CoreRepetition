@@ -42,7 +42,7 @@
         <header id="header">
             <div class="container-fluid">
                 <div class="navbar">
-                    <a href="#" id="logo">
+                    <a href={% url 'home-page' %} id="logo">
                         CoreRepetition
                     </a>
                     <div class="navigation-row">
@@ -67,9 +67,9 @@
         </header>
 
         <!-- VIDEO BACKGROUND -->
-        <video autoplay muted loop id="myVideo">
+        {% comment %} <video autoplay muted loop id="myVideo">
           <source src="{% static '../media/landing_page/study_bg.mp4' %}" type="video/mp4">
-        </video>
+        </video> {% endcomment %}
 
         <div id="fullpage" class="fullpage-default">
 
